@@ -11,6 +11,8 @@ const CheckBalance = () => {
   const { publicKey, connected } = useWallet();
   const { balances, loading, error } = useWalletBalances(publicKey, connection);
 
+  console.log('Balances:', balances);
+
   if (!connected) {
     return (
       <ATMLayout title="Check Balance">
