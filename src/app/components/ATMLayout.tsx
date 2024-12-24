@@ -9,7 +9,7 @@ interface ATMLayoutProps {
 
 const ATMLayout: React.FC<ATMLayoutProps> = ({ title, children }) => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-custom-bg from-gray-900 via-gray-800 to-black text-gray-200 p-4">
       <h1 className="mb-8 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-color to-secondary-color">
         RoboCoin ATM
       </h1>
