@@ -9,8 +9,11 @@ interface Balances {
 export const useWalletBalances = (publicKey: PublicKey | null, connection: Connection) => {
   const [balances, setBalances] = useState<Balances>({ otherTokens: [] });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isCancelled = false;
+
     if (!publicKey) {
       setBalances({ otherTokens: [] });
       setLoading(false);
@@ -19,16 +22,19 @@ export const useWalletBalances = (publicKey: PublicKey | null, connection: Conne
 
     const fetchBalances = async () => {
       setLoading(true);
+      setError(null);
 
       try {
         const roboCoinMint = new PublicKey('8nzCP3xmkpKAq2un87d6Jgg4r3JnvgUSkFemfLbFpump');
 
+        // Fetch RoboCoin balance
         const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, { mint: roboCoinMint });
         const roboCoinBalance =
           tokenAccounts.value.length > 0
             ? parseFloat(tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmountString)
             : 0;
 
+        // Fetch all token balances
         const allTokens = await connection.getParsedTokenAccountsByOwner(publicKey, {
           programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
         });
@@ -38,17 +44,28 @@ export const useWalletBalances = (publicKey: PublicKey | null, connection: Conne
           balance: parseFloat(account.data.parsed.info.tokenAmount.uiAmountString),
         }));
 
-        setBalances({ RoboCoin: roboCoinBalance, otherTokens });
+        if (!isCancelled) {
+          setBalances({ RoboCoin: roboCoinBalance, otherTokens });
+        }
       } catch (error) {
         console.error('Error fetching balances:', error);
-        setBalances({ otherTokens: [] });
+        if (!isCancelled) {
+          setError('Failed to fetch balances.');
+          setBalances({ otherTokens: [] });
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchBalances();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [publicKey, connection]);
 
-  return { balances, loading };
+  return { balances, loading, error };
 };

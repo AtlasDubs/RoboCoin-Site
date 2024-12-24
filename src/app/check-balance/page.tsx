@@ -9,7 +9,7 @@ const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'htt
 
 const CheckBalance = () => {
   const { publicKey, connected } = useWallet();
-  const { balances, loading } = useWalletBalances(publicKey, connection);
+  const { balances, loading, error } = useWalletBalances(publicKey, connection);
 
   if (!connected) {
     return (
@@ -23,6 +23,14 @@ const CheckBalance = () => {
     return (
       <ATMLayout title="Check Balance">
         <p className="text-gray-300">Fetching balances...</p>
+      </ATMLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <ATMLayout title="Check Balance">
+        <p className="text-red-500">{error}</p>
       </ATMLayout>
     );
   }
