@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 interface ATMLayoutProps {
   title: string;
