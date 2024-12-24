@@ -1,17 +1,12 @@
 'use client';
 
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection } from '@solana/web3.js';
 import ATMLayout from '@/app/components/ATMLayout';
 import { useWalletBalances } from '@/hooks/useWalletBalances';
 
-const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com');
-
 const CheckBalance = () => {
   const { publicKey, connected } = useWallet();
-  const { balances, loading, error } = useWalletBalances(publicKey, connection);
-
-  console.log('Balances:', balances);
+  const { balances, loading, error } = useWalletBalances(publicKey);
 
   if (!connected) {
     return (
