@@ -11,10 +11,15 @@ export const useWalletBalances = (publicKey: PublicKey | null, connection: Conne
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBalances = async () => {
-      if (!publicKey) return;
+    if (!publicKey) {
+      setBalances({ otherTokens: [] });
+      setLoading(false);
+      return;
+    }
 
+    const fetchBalances = async () => {
       setLoading(true);
+
       try {
         const roboCoinMint = new PublicKey('8nzCP3xmkpKAq2un87d6Jgg4r3JnvgUSkFemfLbFpump');
 
@@ -27,6 +32,7 @@ export const useWalletBalances = (publicKey: PublicKey | null, connection: Conne
         const allTokens = await connection.getParsedTokenAccountsByOwner(publicKey, {
           programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
         });
+
         const otherTokens = allTokens.value.map(({ account }) => ({
           mint: account.data.parsed.info.mint,
           balance: parseFloat(account.data.parsed.info.tokenAmount.uiAmountString),
