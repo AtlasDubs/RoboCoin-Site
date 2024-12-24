@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-primary: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --background: #141a26; /* Slightly brighter for modern dark themes */
+  --foreground: #e0e0e0; /* Softer white for better contrast */
+  --primary-color: #00c6ff; /* Light blue for accents */
+  --secondary-color: #1d4ed8; /* Deep blue for highlights */
+  --accent-color: #0078d4; /* Contrast color for buttons */
+  --hover-color: #1e40af; /* Button hover state */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-primary);
+}
+
+h1, h2, h3, h4, h5, h6, .mono-text {
+  font-family: var(--font-mono);
+}
+
+/* General Button Styling */
+.atm-modern-button, .atm-specific-button {
+  @apply bg-gradient-to-br from-accent-color to-primary-color text-white 
+         border border-transparent px-6 py-3 rounded-lg shadow-md 
+         hover:from-primary-color hover:to-secondary-color 
+         hover:text-white transition-all duration-300 flex items-center justify-center;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  min-width: 200px; /* Consistent button size */
+  height: 48px;
+  white-space: nowrap;
+}
+
+/* Main Container Styling */
+.atm-container {
+  background: linear-gradient(to bottom right, #1a202c, #141a26);
+  background-size: cover;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* ATM Screen Glassmorphism */
+.atm-screen {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 1200px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Button Container */
+.atm-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Side Buttons */
+.atm-side-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100px;
+}
+
+/* Screen Content Styling */
+.atm-screen-content {
+  color: var(--foreground); /* Use global foreground color */
+  text-align: center;
+}
+
+/* Heading with Gradient Text */
+.atm-heading-gradient {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
