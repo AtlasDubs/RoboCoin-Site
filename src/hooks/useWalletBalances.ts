@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
 import { PublicKey } from '@solana/web3.js';
-import { connection } from '@/app/WalletContextProvider/WalletContextProvider'; // Centralized connection
+import { connection } from '@/app/WalletContextProvider/WalletContextProvider';
+
+interface TokenAccount {
+  mint: string;
+  balance: number;
+}
 
 interface Balances {
   RoboCoin?: number;
-  otherTokens: { mint: string; balance: number }[];
+  otherTokens: TokenAccount[];
 }
 
 export const useWalletBalances = (publicKey: PublicKey | null) => {
@@ -27,20 +32,21 @@ export const useWalletBalances = (publicKey: PublicKey | null) => {
 
       try {
         const roboCoinMint = new PublicKey('8nzCP3xmkpKAq2un87d6Jgg4r3JnvgUSkFemfLbFpump');
-
         console.log('Fetching balances for:', publicKey.toBase58());
 
+        // Fetch RoboCoin balance
         const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, { mint: roboCoinMint });
         const roboCoinBalance =
           tokenAccounts.value.length > 0
             ? parseFloat(tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmountString)
             : 0;
 
+        // Fetch all token balances
         const allTokens = await connection.getParsedTokenAccountsByOwner(publicKey, {
           programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
         });
 
-        const otherTokens = allTokens.value.map(({ account }) => ({
+        const otherTokens = allTokens.value.map(({ account }: any) => ({
           mint: account.data.parsed.info.mint,
           balance: parseFloat(account.data.parsed.info.tokenAmount.uiAmountString),
         }));
@@ -51,7 +57,7 @@ export const useWalletBalances = (publicKey: PublicKey | null) => {
       } catch (error) {
         console.error('Failed to fetch balances:', error);
         if (!isCancelled) {
-          setError('Failed to fetch balances.');
+          setError('Failed to fetch balances. Please try again later.');
         }
       } finally {
         if (!isCancelled) {

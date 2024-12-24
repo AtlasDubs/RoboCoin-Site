@@ -13,6 +13,7 @@ interface WalletContextProviderProps {
   children: ReactNode;
 }
 
+// Centralized connection
 export const connection = new Connection(
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL || clusterApiUrl(WalletAdapterNetwork.Mainnet)
 );
@@ -20,13 +21,7 @@ export const connection = new Connection(
 const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
   const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK as WalletAdapterNetwork) || WalletAdapterNetwork.Mainnet;
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-    ],
-    [network]
-  );
+  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], [network]);
 
   console.log('RPC URL:', connection.rpcEndpoint);
   console.log('Network:', network);
