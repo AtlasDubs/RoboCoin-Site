@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useRef } from 'react';
 
 interface ATMLayoutProps {
   title: string;
@@ -9,6 +10,22 @@ interface ATMLayoutProps {
 }
 
 const ATMLayout: React.FC<ATMLayoutProps> = ({ title, children }) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Scroll up function
+  const scrollUp = () => {
+    if (contentRef.current) {
+      contentRef.current.scrollBy({ top: -100, behavior: 'smooth' });
+    }
+  };
+
+  // Scroll down function
+  const scrollDown = () => {
+    if (contentRef.current) {
+      contentRef.current.scrollBy({ top: 100, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-custom-bg text-gray-200 p-4">
       {/* Header */}
@@ -22,7 +39,7 @@ const ATMLayout: React.FC<ATMLayoutProps> = ({ title, children }) => {
       </div>
 
       {/* ATM Screen */}
-      <div className="relative flex flex-col w-[90%] md:w-[60%] max-w-5xl h-[80vh] mx-auto border border-gray-700 rounded-xl bg-black bg-opacity-60 shadow-xl backdrop-blur-md md:flex-row">
+      <div className="relative flex flex-col w-[90%] md:w-[60%] max-w-5xl h-[80vh] mx-auto border border-gray-700 rounded-xl bg-opacity-60 shadow-xl backdrop-blur-md md:flex-row">
         {/* Left Buttons (Only on larger screens) */}
         <div className="hidden md:flex flex-col justify-around items-end w-28 py-4 space-y-4">
           <Link href="/" className="atm-modern-button">Home</Link>
@@ -31,10 +48,36 @@ const ATMLayout: React.FC<ATMLayoutProps> = ({ title, children }) => {
           <Link href="/transfer" className="atm-modern-button">Transfer Funds</Link>
         </div>
 
-        {/* Main Screen */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-4">
+        {/* Main Screen with Scroll Controls */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-4 relative">
           <h2 className="text-xl md:text-3xl font-bold text-primary-color mb-4">{title}</h2>
-          {children}
+
+          {/* Scrollable Content */}
+          <div
+            ref={contentRef}
+            className="flex-1 overflow-hidden w-full text-gray-300 text-sm md:text-base p-4"
+            style={{ maxHeight: '60vh' }}
+          >
+            {children}
+          </div>
+
+          {/* Scroll Controls */}
+          <div className="absolute bottom-4 flex justify-center space-x-4 w-full">
+            <button
+              onClick={scrollUp}
+              className="bg-gray-700 text-white font-bold py-2 px-4 rounded hover:bg-gray-600"
+              aria-label="Scroll Up"
+            >
+              ↑
+            </button>
+            <button
+              onClick={scrollDown}
+              className="bg-gray-700 text-white font-bold py-2 px-4 rounded hover:bg-gray-600"
+              aria-label="Scroll Down"
+            >
+              ↓
+            </button>
+          </div>
         </div>
 
         {/* Right Buttons (Only on larger screens) */}
