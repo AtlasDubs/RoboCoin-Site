@@ -19,7 +19,13 @@ const Home = () => {
       <Head>
         <title>RoboCoin ATM</title>
       </Head>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-custom-bg bg-cover bg-center text-foreground font-sans p-4">
+      <div className="relative flex min-h-screen flex-col items-center justify-center bg-custom-bg bg-cover bg-center text-foreground font-sans p-4">
+        {/* Wallet Button at Top Right */}
+        <div className="absolute top-4 right-4 z-50">
+          <WalletMultiButton />
+        </div>
+
+        {/* ATM Screen */}
         <h1 className="mb-8 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-color to-secondary-color">
           RoboCoin ATM
         </h1>
@@ -38,7 +44,6 @@ const Home = () => {
             <p className="text-center mb-6 text-gray-300">
               Please connect your wallet to start using RoboCoin services.
             </p>
-            <WalletMultiButton />
             {connected && (
               <div className="mt-6 text-center">
                 <p className="text-gray-300 mb-2">Connected: {publicKey?.toBase58() || 'N/A'}</p>
