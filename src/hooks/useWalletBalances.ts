@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, AccountInfo, ParsedAccountData } from '@solana/web3.js';
 import { connection } from '@/app/WalletContextProvider/WalletContextProvider';
 
 interface TokenAccount {
@@ -38,7 +38,7 @@ export const useWalletBalances = (publicKey: PublicKey | null) => {
         const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, { mint: roboCoinMint });
         const roboCoinBalance =
           tokenAccounts.value.length > 0
-            ? parseFloat(tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmountString)
+            ? parseFloat((tokenAccounts.value[0].account.data as ParsedAccountData).parsed.info.tokenAmount.uiAmountString)
             : 0;
 
         // Fetch all token balances
@@ -46,9 +46,9 @@ export const useWalletBalances = (publicKey: PublicKey | null) => {
           programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
         });
 
-        const otherTokens = allTokens.value.map(({ account }: any) => ({
-          mint: account.data.parsed.info.mint,
-          balance: parseFloat(account.data.parsed.info.tokenAmount.uiAmountString),
+        const otherTokens = allTokens.value.map(({ account }: { account: AccountInfo<ParsedAccountData> }) => ({
+          mint: (account.data as ParsedAccountData).parsed.info.mint,
+          balance: parseFloat((account.data as ParsedAccountData).parsed.info.tokenAmount.uiAmountString),
         }));
 
         if (!isCancelled) {
